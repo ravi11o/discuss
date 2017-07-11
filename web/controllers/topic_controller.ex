@@ -2,14 +2,22 @@ defmodule Discusss.TopicController do
   use Discusss.Web, :controller
 
   alias Discusss.Topic
+  alias Discusss.Comment
 
   plug Discusss.Plugs.RequireAuth when action in [:new, :create, :update, :edit, :delete]
   plug :check_topic_owner when action in [:edit, :update, :delete]
 
   def index(conn, _params) do
-    topics = Repo.all(Topic)
+    topics = Repo.all(Topic) 
 
     render conn, "index.html", topics: topics
+  end
+
+  def show(conn, %{"id" => id}) do
+    topic = Repo.get(Topic, id) |> Repo.preload([:comments])
+    changeset = Comment.changeset(%Comment{}, %{})
+
+    render conn, "show.html", topic: topic, changeset: changeset
   end
 
   def new(conn, _params) do

@@ -1,0 +1,34 @@
+<h3><%= @topic.title %></h3>
+<h5>comments</h5>
+<ul class="collection">
+  <%= for comment <- @topic.comments do %>
+    <li class="collection-item">
+      <%= comment.text %>
+      <%= if @conn.assigns.user && @conn.assigns.user.id == comment.user_id do %>
+        <div class="right">
+          <%= link "Delete", to: topic_comment_path(@conn, :delete, @topic, comment), method: :delete %>
+        </div>
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+
+<%= if @conn.assigns.user do %>
+  <h5>Add Comment</h5>
+  <%= form_for @changeset, topic_comment_path(@conn, :create, @topic), fn f -> %>
+    <%= if @changeset.action do %>
+      <div class="alert alert-danger">
+        <p>Oops, something went wrong! Please check the errors below.</p>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= text_input f, :text, class: "form-control", placeholder: "Comments..." %>
+      <%= error_tag f, :text %>
+    </div>
+
+    <div class="form-group">
+      <%= submit "Submit", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+<% end %>

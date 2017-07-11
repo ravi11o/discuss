@@ -17,7 +17,11 @@ defmodule Discusss.Router do
   scope "/", Discusss do
     pipe_through :browser # Use the default browser stack
 
-    resources "/", TopicController
+    resources "/", TopicController do 
+      resources "/comments", CommentController
+    end
+    
+    
   end
 
   scope "/auth", Discusss do
